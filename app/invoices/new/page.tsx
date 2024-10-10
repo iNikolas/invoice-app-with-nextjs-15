@@ -14,8 +14,6 @@ export default function DashboardPage() {
   useFormStatus();
   const [state, setState] = React.useState("ready");
   const handleOnSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-
     if (state === "pending") {
       event.preventDefault();
       return;

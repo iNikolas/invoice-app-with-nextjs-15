@@ -2,6 +2,8 @@ import React from "react";
 import Link from "next/link";
 import { CirclePlus } from "lucide-react";
 
+import { db } from "@/db";
+import { Invoices } from "@/db/schema";
 import {
   Table,
   TableBody,
@@ -13,8 +15,10 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
-export default function DashboardPage() {
+export default async function DashboardPage() {
+  const results = await db.select().from(Invoices);
   return (
     <main className="flex flex-col h-screen gap-6 text-center max-w-5xl mx-auto my-12">
       <div className="flex justify-between">
@@ -40,23 +44,51 @@ export default function DashboardPage() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          <TableRow>
-            <TableCell className="p-4 text-left font-medium">
-              <span className="font-semibold">10/31/2024</span>
-            </TableCell>
-            <TableCell className="p-4 text-left">
-              <span className="font-semibold">Philip J. Fry</span>
-            </TableCell>
-            <TableCell className="p-4 text-left">
-              <span>fry@latetexpress.com</span>
-            </TableCell>
-            <TableCell className="p-4 text-center">
-              <Badge className="rounded-full">Open</Badge>
-            </TableCell>
-            <TableCell className="p-4 text-right">
-              <span>$250.00</span>
-            </TableCell>
-          </TableRow>
+          {results.map((result) => (
+            <TableRow className="[&_td]:p-0" key={result.id}>
+              <TableCell className="text-left font-medium">
+                <Link
+                  className="p-4 block font-semibold"
+                  href={`/invoices/${result.id}`}
+                >
+                  {new Date(result.createTs).toLocaleDateString()}
+                </Link>
+              </TableCell>
+              <TableCell className="text-left">
+                <Link
+                  className="p-4 block font-semibold"
+                  href={`/invoices/${result.id}`}
+                >
+                  Philip J. Fry
+                </Link>
+              </TableCell>
+              <TableCell className="text-left">
+                <Link className="p-4 block" href={`/invoices/${result.id}`}>
+                  fry@latetexpress.com
+                </Link>
+              </TableCell>
+              <TableCell className="text-center">
+                <Link className="p-4 block" href={`/invoices/${result.id}`}>
+                  <Badge
+                    className={cn(
+                      "rounded-full capitalize",
+                      result.status === "open" && "bg-blue-500",
+                      result.status === "paid" && "bg-green-600",
+                      result.status === "void" && "bg-zinc-700",
+                      result.status === "uncollectible" && "bg-red-600",
+                    )}
+                  >
+                    {result.status}
+                  </Badge>
+                </Link>
+              </TableCell>
+              <TableCell className="text-right">
+                <Link className="p-4 block" href={`/invoices/${result.id}`}>
+                  ${(result.value / 100).toFixed(2)}
+                </Link>
+              </TableCell>
+            </TableRow>
+          ))}
         </TableBody>
       </Table>
     </main>
