@@ -1,7 +1,5 @@
-import { SignInButton, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 import Link from "next/link";
 
-import { db } from "@/db";
 import { Button } from "@/components/ui/button";
 
 export default async function Home() {
@@ -12,12 +10,6 @@ export default async function Home() {
         <Button asChild>
           <Link href="/dashboard">Sign In</Link>
         </Button>
-        <SignedOut>
-          <SignInButton />
-        </SignedOut>
-        <SignedIn>
-          <UserButton />
-        </SignedIn>
       </p>
     </main>
   );
