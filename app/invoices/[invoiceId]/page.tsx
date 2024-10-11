@@ -1,4 +1,5 @@
 import React from "react";
+import { notFound } from "next/navigation";
 import { eq } from "drizzle-orm";
 
 import { db } from "@/db";
@@ -11,10 +12,17 @@ export default async function InvoicePage({
 }: {
   params: { invoiceId: string };
 }) {
-  const [invoice] = await db
-    .select()
-    .from(Invoices)
-    .where(eq(Invoices.id, Number.parseInt(params.invoiceId, 10)));
+  const id = Number.parseInt(params.invoiceId, 10);
+
+  if (Number.isNaN(id)) {
+    throw new Error("Invalid invoice ID");
+  }
+
+  const [invoice] = await db.select().from(Invoices).where(eq(Invoices.id, id));
+
+  if (!invoice) {
+    notFound();
+  }
 
   return (
     <main className="h-screen max-w-5xl mx-auto my-12">
