@@ -1,9 +1,11 @@
 "use client";
 
-export default function Error() {
+import NextError from "next/error";
+
+export default function Error({ error }: { error: Error }) {
   return (
     <div>
-      <h1>404 - Page not found</h1>
+      <NextError statusCode={500} title={error.message} />
     </div>
   );
 }
