@@ -21,9 +21,9 @@ import { Container } from "@/components/container";
 export default async function DashboardPage() {
   const results = await db.select().from(Invoices);
   return (
-    <main className="h-screen my-12">
+    <main className="my-12">
       <Container>
-        <div className="flex justify-between">
+        <div className="flex justify-between mb-6">
           <h1 className="text-3xl font-bold">Invoices</h1>
           <p>
             <Button variant="ghost" className="gap-2" asChild>
